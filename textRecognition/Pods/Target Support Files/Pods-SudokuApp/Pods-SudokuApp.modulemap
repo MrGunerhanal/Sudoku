@@ -1,0 +1,6 @@
+framework module Pods_SudokuApp {
+  umbrella header "Pods-SudokuApp-umbrella.h"
+
+  export *
+  module * { export * }
+}

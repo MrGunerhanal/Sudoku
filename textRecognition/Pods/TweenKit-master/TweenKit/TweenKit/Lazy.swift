@@ -1,0 +1,45 @@
+//
+//  Lazy.swift
+//  TweenKit
+//
+//  Created by Steven Barnegren on 30/03/2017.
+//  Copyright © 2017 Steve Barnegren. All rights reserved.
+//
+
+import Foundation
+
+/* 
+ TLDR: Call .value on Lazy<T>, you will get the value you are looking for. (most likely a double)
+ 
+ What is Lazy<T>, and why do we need it?
+ 
+ Lazy<T> allows us to create a value, but defer its calculation until the point that it is used.
+ In the event that the value is unused, then the calculation will be avoided entirely.
+
+ eg. The BezierAction update handler supplys two arguments, position and rotation: () -> (position: Double, rotation: Lazy<Double>)
+ 
+ Positon is quick to calculate, and will be used by the supplied closure in almost all cases.
+ Rotation is a bit more intensive to calculate, and the closure might not even use it.
+ Wrapping the calculation in Lazy<Double>, rotation will not be caluclated if rotation.value is never called.
+ 
+ The result of the value is cached, so calling calling .value multiple times will only perform the calculation once
+ */
+
+public class Lazy<T> {
+    
+    let calculateValue: () -> (T)
+    var backing: T?
+    
+    init(calculate: @escaping () -> (T)) {
+        self.calculateValue = calculate
+    }
+    
+    public var value : T {
+        get {
+            if backing == nil {
+                backing = calculateValue()
+            }
+            return backing!
+        }
+    }
+}
